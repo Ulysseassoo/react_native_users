@@ -1,40 +1,111 @@
 import { FontAwesome } from "@expo/vector-icons"
 import { useNavigation } from "@react-navigation/native"
-import { Box, Center, FlatList, HStack, Icon, Text, View } from "native-base"
-import React from "react"
-import { User } from "../Router/Screens/UsersStack/UsersScreen"
+import { Box, Button, Center, FlatList, HStack, Icon, Image, Pressable, Text, View, VStack } from "native-base"
+import React, { useEffect, useState } from "react"
+import { getUsers } from "../Api/users"
+import { User } from "../Interface/User"
 
-interface Props {
-	users: User[]
-}
-
-const UsersList = ({ users }: Props) => {
+const UsersList = () => {
 	const navigation = useNavigation()
+	const [users, setUsers] = useState<User[] | null>(null)
+
+	const setNewUsers = async () => {
+		const data = await getUsers(5)
+		setUsers(data.results)
+	}
+
+	const addNewUser = async () => {
+		const data = await getUsers(1)
+		setUsers((previousUsers) => {
+			if (previousUsers !== null) {
+				return [...previousUsers, ...data.results]
+			}
+			return [...data.results]
+		})
+	}
+
+	const clearUsers = () => {
+		if (users !== null) {
+			setUsers([])
+		}
+	}
+
+	useEffect(() => {
+		setNewUsers()
+	}, [])
+
+	const [refresh, setRefresh] = useState(false)
+
+	useEffect(() => {
+		if (refresh) {
+			setNewUsers()
+			setRefresh(false)
+		}
+	}, [refresh])
 
 	return (
-		<Center>
-			<Text>Utilisateurs</Text>
+		<>
 			<FlatList
 				data={users}
 				keyExtractor={(item) => item.name.first + item.name.last}
 				renderItem={({ item }) => (
-					<HStack padding="2" alignItems={"center"} space="2" justifyContent={"center"}>
-						<Text fontWeight={"bold"} textAlign={"center"}>{`${item.name.first} ${item.name.last}`}</Text>
-						<Icon
-							as={FontAwesome}
-							name="search-plus"
-							size={4}
-							color="blue.500"
-							onPress={() =>
-								navigation.navigate("UserDetail", {
-									user: item
-								})
-							}
-						/>
-					</HStack>
+					<Pressable
+						width="100%"
+						bg="gray.100"
+						onPress={() =>
+							navigation.navigate("UserDetail", {
+								user: item
+							})
+						}>
+						<HStack
+							width="full"
+							padding="4"
+							alignItems={"center"}
+							space="4"
+							borderBottomWidth={1}
+							borderBottomColor="gray.200"
+							borderBottomStyle={"solid"}>
+							<Image
+								source={{
+									uri: item.picture.medium
+								}}
+								width="16"
+								height="16"
+								borderRadius="full"
+								alt={item.name.first}
+							/>
+							<VStack space="1">
+								<Text fontWeight={"bold"} fontSize="lg" textAlign={"center"}>{`${item.name.first} ${item.name.last}`}</Text>
+								<Text fontSize="md" textAlign={"left"} color="gray.500">
+									{item.nat}
+								</Text>
+							</VStack>
+						</HStack>
+					</Pressable>
 				)}
+				ListHeaderComponent={
+					<Box display="flex" flexDir="row-reverse" width="full" p="2">
+						<Button width="full" onPress={addNewUser} bg="green.500">
+							Add user
+						</Button>
+					</Box>
+				}
+				ListFooterComponent={
+					<Box display="flex" flexDir="row-reverse" width="100%">
+						<Button onPress={clearUsers} bg="red.500" borderRadius={"none"} width="full">
+							Clear Users
+						</Button>
+					</Box>
+				}
+				refreshing={refresh}
+				onRefresh={() => setRefresh(true)}
+				ListEmptyComponent={
+					<Center p="2">
+						<Text>No users charged</Text>
+					</Center>
+				}
 			/>
-		</Center>
+		</>
 	)
 }
 

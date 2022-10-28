@@ -3,7 +3,12 @@ import React from "react"
 import HomeDetailsScreen from "../Screens/HomeStack/HomeDetailsScreen"
 import HomeScreen from "../Screens/HomeStack/HomeScreen"
 
-const HomeStack = createNativeStackNavigator()
+type HomeStackParamList = {
+	Home: undefined
+	HomeDetail: undefined
+}
+
+const HomeStack = createNativeStackNavigator<HomeStackParamList>()
 
 const HomeStackScreens = () => {
 	return (
