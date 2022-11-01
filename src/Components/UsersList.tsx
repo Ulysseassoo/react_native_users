@@ -10,8 +10,10 @@ const UsersList = () => {
 	const [users, setUsers] = useState<User[] | null>(null)
 
 	const setNewUsers = async () => {
-		const data = await getUsers(5)
-		setUsers(data.results)
+		if (users !== null && users.length !== 0) {
+			const data = await getUsers(users?.length)
+			setUsers(data.results)
+		}
 	}
 
 	const addNewUser = async () => {
@@ -86,14 +88,14 @@ const UsersList = () => {
 				ListHeaderComponent={
 					<Box display="flex" flexDir="row-reverse" width="full" p="2">
 						<Button width="full" onPress={addNewUser} bg="green.500">
-							Add user
+							Ajouter un nouvel utilisateur
 						</Button>
 					</Box>
 				}
 				ListFooterComponent={
 					<Box display="flex" flexDir="row-reverse" width="100%">
 						<Button onPress={clearUsers} bg="red.500" borderRadius={"none"} width="full">
-							Clear Users
+							Supprimer tous les utilisateurs
 						</Button>
 					</Box>
 				}
@@ -101,7 +103,7 @@ const UsersList = () => {
 				onRefresh={() => setRefresh(true)}
 				ListEmptyComponent={
 					<Center p="2">
-						<Text>No users charged</Text>
+						<Text>Aucun utilisateurs n'a été chargé.</Text>
 					</Center>
 				}
 			/>
