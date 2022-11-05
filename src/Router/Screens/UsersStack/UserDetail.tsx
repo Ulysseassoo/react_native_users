@@ -1,6 +1,6 @@
 import { FontAwesome } from "@expo/vector-icons"
 import { Route, useRoute } from "@react-navigation/native"
-import { Box, Center, Container, Divider, HStack, Icon, Image, Text, View, VStack } from "native-base"
+import { Box, Center, Container, Divider, HStack, Icon, Image, ScrollView, Text, View, VStack } from "native-base"
 import React from "react"
 import ListItem from "../../../Components/ListItem"
 import { User } from "../../../Interface/User"
@@ -54,7 +54,7 @@ const UserDetail = () => {
 	]
 
 	return (
-		<Box width="100%">
+		<ScrollView width="100%">
 			<Center paddingY="4">
 				<Image
 					borderRadius={"full"}
@@ -68,13 +68,13 @@ const UserDetail = () => {
 			</Center>
 
 			<Box borderX="1" borderRadius="md">
-				<VStack space="4">
+				<Box>
 					{details.map((detail, index) => (
 						<ListItem {...detail} key={detail.title} isLast={index === details.length - 1} />
 					))}
-				</VStack>
+				</Box>
 			</Box>
-		</Box>
+		</ScrollView>
 	)
 }
 

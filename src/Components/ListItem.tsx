@@ -11,7 +11,7 @@ interface Props {
 
 const ListItem = ({ iconName, title, content, isLast = false }: Props) => {
 	return (
-		<HStack px="4" pt="4" display={"flex"} flexDir="row" space="3" alignItems={"center"}>
+		<HStack px="4" pt="4" display={"flex"} flexDir="row" space="3" alignItems={"center"} mb="4">
 			<Icon as={FontAwesome} name={iconName} color="gray.500" size="md" />
 			<Box borderBottomColor={"gray.200"} borderBottomWidth={isLast ? "0" : "1"} width="100%" pb="2">
 				<Text color="gray.500" textTransform={"capitalize"}>

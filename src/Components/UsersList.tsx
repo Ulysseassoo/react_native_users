@@ -9,10 +9,16 @@ const UsersList = () => {
 	const navigation = useNavigation()
 	const [users, setUsers] = useState<User[] | null>(null)
 
-	const setNewUsers = async () => {
+	const setNewUsers = async (start?: boolean) => {
+		if (start) {
+			// By default
+			const data = await getUsers(5)
+			setUsers(data.results)
+		}
 		if (users !== null && users.length !== 0) {
 			const data = await getUsers(users?.length)
 			setUsers(data.results)
+			return
 		}
 	}
 
@@ -33,7 +39,7 @@ const UsersList = () => {
 	}
 
 	useEffect(() => {
-		setNewUsers()
+		setNewUsers(true)
 	}, [])
 
 	const [refresh, setRefresh] = useState(false)
